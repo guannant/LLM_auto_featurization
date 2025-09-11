@@ -17,6 +17,7 @@ dependencies = [
     "scipy",
     "scikit-learn",
     "pandas",
+    "openpyxl",
     "argo-proxy",
     "h2o",
     "tqdm"
