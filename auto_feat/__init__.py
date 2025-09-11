@@ -3,6 +3,8 @@ Scripts to perform automatic featurization and model training
 """
 from typing import Dict, List, Union
 
+import pandas as pd
+
 
 class AutoFeaturizer():
     """
@@ -31,5 +33,13 @@ class AutoFeaturizer():
     def features_description(self) -> Dict:
         """
         Returns a dictionary containing physical descriptions of the features used and created thus far
+        """
+        pass
+
+    @property
+    def clean_augmented_data(self) -> pd.DataFrame:
+        """
+        Returns dataframe containing original (raw) features, as well as any augmented features that have been already
+        used
         """
         pass
