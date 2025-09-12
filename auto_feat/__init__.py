@@ -1,52 +1,79 @@
 """
 Scripts to perform automatic featurization and model training
 """
-from typing import Dict, List, Union
-
+from typing import Dict, List, Union, Optional, Any
 import pandas as pd
 
 
-class AutoFeaturizer():
+class AutoFeaturizer:
     """
     Class that, given a user-specified target, some literature, and relevant data, employs LLMs to automatically
-    generates features to be used in downstream ML tasks.
+    generate features to be used in downstream ML tasks.
 
     Args:
         papers: list of paths to where papers are stored (in raw text format)
-        data: path to where data is stored
+        data: path to where data is stored (CSV or parquet supported)
         target: user-specified target to be used by downstream ML models
     """
+
     def __init__(self,
                  papers: List[str],
-                 data: Union[str],
+                 data: Union[str, pd.DataFrame],
                  target: str) -> None:
-        pass
+        self.papers = papers
+        self._data = pd.read_csv(data) if isinstance(data, str) else data
+        self.target = target
 
+        # === Pipeline-populated attributes ===
+        self._literature_review: Optional[str] = None
+        self._features_description: Dict[str, str] = {}   # original + engineered
+        self._clean_augmented_data: pd.DataFrame = self._data.copy()
+        self._construct_strategy: Dict[str, str] = {}     # proposals for new features
+
+        # From proposal
+        self.new_feature_significance: Optional[Dict[str, str]] = None
+        self.new_feature_computation: Optional[Dict[str, str]] = None
+
+        # From generation
+        self.generated_code: Optional[str] = None
+        self.error_message: Optional[str] = None
+
+        # From evaluation
+        self.eval_report: Optional[Dict[str, Any]] = None
+
+    # === Properties ===
     @property
     def literature_review(self) -> str:
-        """
-        Returns a relevant summary of the paper(s) provided
-        """
-        pass
+        """Returns a relevant summary of the paper(s) provided"""
+        return self._literature_review
+
+    @literature_review.setter
+    def literature_review(self, summary: str) -> None:
+        self._literature_review = summary
 
     @property
     def features_description(self) -> Dict:
-        """
-        Returns a dictionary containing physical descriptions of the features used and created thus far
-        """
-        pass
+        """Returns dictionary containing physical descriptions of features (original + created)"""
+        return self._features_description
+
+    @features_description.setter
+    def features_description(self, desc: Dict) -> None:
+        self._features_description = desc
 
     @property
     def clean_augmented_data(self) -> pd.DataFrame:
-        """
-        Returns dataframe containing original (raw) features, as well as any augmented features that have been already
-        used
-        """
-        pass
+        """Returns dataframe containing original and augmented features"""
+        return self._clean_augmented_data
+
+    @clean_augmented_data.setter
+    def clean_augmented_data(self, df: pd.DataFrame) -> None:
+        self._clean_augmented_data = df
+
     @property
     def construct_strategy(self) -> Dict:
-        """
-        Returns a dictionary containing proposed (new) features as the key as well as how to construct them as the value
-        """
-        pass
-    
+        """Returns dictionary containing proposed (new) features and their construction rules"""
+        return self._construct_strategy
+
+    @construct_strategy.setter
+    def construct_strategy(self, strategy: Dict) -> None:
+        self._construct_strategy = strategy
