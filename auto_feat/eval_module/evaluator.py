@@ -1,10 +1,12 @@
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
-from sklearn.metrics import mean_squared_error, r2_score, accuracy_score, log_loss
+from sklearn.metrics import root_mean_squared_error, r2_score, accuracy_score, log_loss
 from sklearn.model_selection import train_test_split
 import uuid
 import time
+
+from auto_feat import AutoFeaturizer
 
 def create_evaluation_agent_wrap(max_retries: int = 3, task: str = "regression"):
     """
@@ -15,19 +17,18 @@ def create_evaluation_agent_wrap(max_retries: int = 3, task: str = "regression")
         task (str): "regression" or "classification".
     """
 
-    def agent_node(state: object):
+    def agent_node(state: AutoFeaturizer):
         """
         state must provide:
           - state.clean_augmented_data: pandas.DataFrame (dataset with features + target)
-          - state.feature_keys: list of feature names
           - state.target_key: str, target column name
 
         state will be updated with:
           - state.eval_report: dict (feedback report with metrics, feature importance, narrative)
         """
         df = state.clean_augmented_data
-        feature_keys = state.feature_keys
         target_key = state.target_key
+        feature_keys = [col for col in df.columns if col != target_key]
 
         for attempt in range(max_retries):
             try:
@@ -67,14 +68,14 @@ def create_evaluation_agent_wrap(max_retries: int = 3, task: str = "regression")
 
                 if task == "regression":
                     report["performance"]["train"] = {
-                        "MSE": mean_squared_error(y_train, y_train_pred),
-                        "RMSE": mean_squared_error(y_train, y_train_pred, squared=False),
+                        "MSE": root_mean_squared_error(y_train, y_train_pred) ** 2,
+                        "RMSE": root_mean_squared_error(y_train, y_train_pred, squared=False),
                         "R2": r2_score(y_train, y_train_pred),
                         "N Obs": len(y_train),
                     }
                     report["performance"]["test"] = {
-                        "MSE": mean_squared_error(y_test, y_test_pred),
-                        "RMSE": mean_squared_error(y_test, y_test_pred, squared=False),
+                        "MSE": root_mean_squared_error(y_test, y_test_pred) ** 2,
+                        "RMSE": root_mean_squared_error(y_test, y_test_pred, squared=False),
                         "R2": r2_score(y_test, y_test_pred),
                         "N Obs": len(y_test),
                     }
