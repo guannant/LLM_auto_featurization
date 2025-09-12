@@ -18,13 +18,13 @@ def main():
 
     # --- Initialize AutoFeaturizer ---
     state = AutoFeaturizer(
-        target="INPUT PROPERTY: Calculated Density (g/cm$^3$)",
+        target="OUTPUT PROPERTY: YS (MPa)",
         data_path=data_path,
         manuscript_path=manuscript_path,
     )
 
     # --- Build LangGraph workflow ---
-    workflow = build_autofeat_graph(task="regression", max_retries=3)
+    workflow = build_autofeat_graph(task="regression", max_retries=10)
     app = workflow.compile()
 
     # --- Run pipeline ---

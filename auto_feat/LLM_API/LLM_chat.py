@@ -3,7 +3,7 @@ import openai
 from openai import APIStatusError, InternalServerError
 
 # === Model & Client Setup ===
-MODEL = "argo:gpt-5-mini"
+MODEL = "argo:gpt-5"
 client = openai.OpenAI(
     api_key="whatever+random",     # Replace with your real key if needed
     base_url="http://0.0.0.0:60963/v1",  # Local server / proxy endpoint

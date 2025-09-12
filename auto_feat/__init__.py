@@ -26,7 +26,13 @@ class AutoFeaturizer:
         self.manuscript_path = manuscript_path or os.path.join(base_dir, "manuscript.txt")
         self.data_path = data_path or os.path.join(base_dir, "data.csv")
         self.target = target
-        self.data = pd.read_csv(self.data_path)
+        self.data = pd.read_csv(self.data_path)[[
+                                                    'INPUT PROPERTY: Microstructure',
+                                                    'INPUT PROPERTY: Processing method',
+                                                    'INPUT PROPERTY: BCC/FCC/other',
+                                                    'INPUT PROPERTY: Calculated Density (g/cm$^3$)',
+                                                    'OUTPUT PROPERTY: YS (MPa)'
+                                                ]]
 
         # === Pipeline-populated attributes ===
 

@@ -15,6 +15,7 @@ def feature_generation(llm, max_retries: int):
       - If the generated code raises a KeyError due to referencing a non-existent
         original column, we DO NOT retry — we instead create any missing required
         feature columns and fill them with NaN, then succeed.
+      - Each retry also provides the previously generated code so the LLM can refine it.
     """
     def agent_node(state: object) -> bool:
         """
@@ -68,6 +69,7 @@ def feature_generation(llm, max_retries: int):
         last_result = None
         system_message = base_system_message
         user_msg = base_user_msg
+        prev_code = None
 
         for attempt in range(max_retries):
             prompt = [
@@ -81,15 +83,19 @@ def feature_generation(llm, max_retries: int):
 
             # Expect code block
             if not (isinstance(result, str) and result.strip().startswith("```python") and result.strip().endswith("```")):
-                # If not in the strict format, ask again next loop
                 user_msg = (
                     base_user_msg
                     + "\n\nNote: Your last output did not follow the STRICT formatting. "
                       "Only output executable Python code inside a ```python block."
                 )
+                if prev_code:
+                    user_msg += f"\n\nFor reference, here was your last attempt:\n```python\n{prev_code}\n```"
                 continue
 
             code = extract_code(result)
+            prev_code = code  # store for next retry
+            state.generated_code = code
+
             # --- Execute the code on the provided df ---
             local_vars = {"df": state.clean_augmented_data}
             try:
@@ -112,25 +118,28 @@ def feature_generation(llm, max_retries: int):
                             + f"\n\nNote: Your last code failed because these required features are missing: {missing_feats}\n"
                               "Please regenerate corrected Python code."
                         )
+                        if prev_code:
+                            user_msg += f"\n\nFor reference, here was your last attempt:\n```python\n{prev_code}\n```"
                         continue  # retry generation
 
                     # ✅ Success: overwrite state df and finish
                     state.clean_augmented_data = modified_df
                     print(f"✅ Successfully generated all required features at attempt {attempt+1}")
-                    return 
+                    return True
 
             except Exception as e:
-                # Other runtime errors → retry with feedback
                 error_feedback = str(e)
                 print(f"❌ Execution failed (attempt {attempt+1}): {error_feedback}")
+
                 user_msg = (
                     base_user_msg
                     + f"\n\nNote: Your last code failed with the following error:\n{error_feedback}\n"
                       "Please regenerate corrected Python code."
                 )
+                if prev_code:
+                    user_msg += f"\n\nFor reference, here was your last attempt:\n```python\n{prev_code}\n```"
                 continue
 
-        # Out of retries (we only get here when we kept missing features or kept failing on non-KeyError)
         raise RuntimeError(f"Failed after {max_retries} retries. Last output:\n{last_result}")
 
     return agent_node

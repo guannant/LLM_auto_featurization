@@ -56,7 +56,7 @@ def feat_proposal(llm, max_retries=3):
             raw = llm(prompt)
             if is_valid_result(raw):
                 parsed = json.loads(raw)  
-                state.construct_strategy(parsed["new_feature_computation"])
+                state.construct_strategy = parsed["new_feature_computation"]
                 return 
 
         raise RuntimeError(f"Failed after {max_retries} retries. Last output: {raw}")
