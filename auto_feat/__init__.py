@@ -3,6 +3,7 @@ Scripts to perform automatic featurization and model training
 """
 from typing import Dict, List, Union, Optional, Any
 import pandas as pd
+import os
 
 
 class AutoFeaturizer:
@@ -18,22 +19,19 @@ class AutoFeaturizer:
 
     def __init__(self,
                  target: str,
-                 manuscript_path: str,
-                 data_path: str) -> None:
-        
-        self.manuscript_path = manuscript_path
-        self.data_path = data_path
-        self.target = target
+                 manuscript_path: str = None,
+                 data_path: str = None) -> None:
 
-        
-        
-        
+        base_dir = os.path.join(os.path.dirname(__file__), "data")
+        self.manuscript_path = manuscript_path or os.path.join(base_dir, "manuscript.txt")
+        self.data_path = data_path or os.path.join(base_dir, "data.csv")
+        self.target = target
+        self.data = pd.read_csv(self.data_path)
 
         # === Pipeline-populated attributes ===
 
         #From paper summarization
-        self.papers = None
-        self.data = None
+        
         self._literature_review: Optional[str] = None
         self._features_description: Dict[str, str] = {}   # original + engineered
         self._clean_augmented_data: pd.DataFrame = self.data.copy()
