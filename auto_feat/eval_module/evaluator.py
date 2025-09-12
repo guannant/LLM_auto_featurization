@@ -134,6 +134,7 @@ def create_evaluation_agent_wrap(max_retries: int = 3, task: str = "regression")
                     )
  
                 # Update state
+                state.datalog.append(report)
                 state.eval_report = report
                 return
  

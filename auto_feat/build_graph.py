@@ -14,7 +14,7 @@ from auto_feat.eval_module.evaluator import create_evaluation_agent_wrap
 from auto_feat.LLM_API.LLM_chat import chatbox
 
 
-def build_autofeat_graph(task: str = "regression", max_retries: int = 5, max_iterations: int = 3):
+def build_autofeat_graph(task: str = "regression", max_retries: int = 5):
     """
     Build the LangGraph pipeline with feedback loop.
 
@@ -23,12 +23,11 @@ def build_autofeat_graph(task: str = "regression", max_retries: int = 5, max_ite
         - Evaluation runs on the original dataset to produce a baseline report.
         - Feedback loop:
             Evaluation → Proposal → Generation → Evaluation
-        - Stops after max_iterations or explicit END.
+        - Stops after max_iterations.
 
     Args:
         task (str): "regression" or "classification".
         max_retries (int): retries for LLM-based modules.
-        max_iterations (int): number of feedback loop iterations.
     Returns:
         workflow (StateGraph)
     """
@@ -56,13 +55,23 @@ def build_autofeat_graph(task: str = "regression", max_retries: int = 5, max_ite
     workflow.set_entry_point("Summarizer")
     workflow.add_edge("Summarizer", "Evaluation")
 
-    # Feedback loop: Evaluation → Proposal → Generation → Evaluation
-    workflow.add_edge("Evaluation", "FeatProposal")
+    # --- Conditional feedback loop ---
+    def should_continue(state: dict) -> bool:
+        """Check iteration count to decide loop continuation."""
+        iteration = state.iterations
+        max_iter = state.max_iterations
+        # Increment iteration in state
+        state.iterations = iteration + 1
+        return state.iterations <= max_iter
+
+    workflow.add_conditional_edges(
+        "Evaluation",
+        should_continue,
+        {True: "FeatProposal", False: END}
+    )
+
+    # Loop body: Proposal → Generation → Evaluation
     workflow.add_edge("FeatProposal", "FeatGeneration")
     workflow.add_edge("FeatGeneration", "Evaluation")
-
-    # Exit after iterations
-    # We’ll let LangGraph END after max_iterations externally controlled
-    workflow.add_edge("Evaluation", END)
 
     return workflow

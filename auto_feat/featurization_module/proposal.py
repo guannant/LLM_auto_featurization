@@ -3,7 +3,7 @@ import json
 def feat_proposal(llm, max_retries=3):
     """
     Proposes new features to be created from existing features.
-    Only outputs new_feature_computation dictionary as a Python dict.
+    Limits proposals to simple, interpretable features (max 10).
     """
     def agent_node(state):
         description = state.features_description
@@ -16,9 +16,19 @@ def feat_proposal(llm, max_retries=3):
             "Task: Propose new features to create from existing features. "
             "Use the given feature descriptions, literature summary, target definition, "
             "and previous run reports.\n\n"
-            "Output format (STRICT Dictionary):\n"
+            "STRICT RULES FOR FEATURE CREATION:\n"
+            "1. Propose at most 10 new features.\n"
+            "2. Each feature must use simple operations:\n"
+            "   - basic arithmetic (+, -, *, /)\n"
+            "   - ratios or differences\n"
+            "   - statistical summaries (mean, variance, min, max, std)\n"
+            "3. Each feature can involve at most 3 original columns.\n"
+            "4. Use no more than 5 operations per feature.\n"
+            "5. Avoid overly complex, nested, or hard-to-compute transformations.\n"
+            "6. Prefer simple and interpretable features that are meaningful for science and ML.\n\n"
+            "Output format (STRICT JSON Dictionary):\n"
             "{\n"
-            '  "new_feature_computation": { "feature_name": "explanation of how to derive from existing features", ... }\n'
+            '  \"new_feature_computation\": { \"feature_name\": \"explanation of how to derive from existing features\", ... }\n'
             "}\n"
         )
 
@@ -35,14 +45,16 @@ def feat_proposal(llm, max_retries=3):
             "==== Previous Runs Report ====\n"
             f"{report_str}\n"
             "\nInstructions:\n"
-            "- Suggest features derived from existing ones.\n"
-            "- Ensure the JSON dictionary is followed strictly.\n"
+            "- Suggest no more than 5 simple, interpretable features.\n"
+            "- Use only basic arithmetic, ratios, differences, or statistical summaries.\n"
+            "- Each feature must be practical to compute in pandas/numpy.\n"
+            "- Follow the strict JSON format.\n"
         )
 
         prompt = [
-                {"role": "system", "content": system_message},
-                {"role": "user", "content": user_msg}
-            ]
+            {"role": "system", "content": system_message},
+            {"role": "user", "content": user_msg}
+        ]
 
         def is_valid_result(result):
             try:
@@ -62,7 +74,3 @@ def feat_proposal(llm, max_retries=3):
         raise RuntimeError(f"Failed after {max_retries} retries. Last output: {raw}")
 
     return agent_node
-
-
-
-

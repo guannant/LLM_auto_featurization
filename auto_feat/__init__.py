@@ -20,19 +20,15 @@ class AutoFeaturizer:
     def __init__(self,
                  target: str,
                  manuscript_path: str = None,
-                 data_path: str = None) -> None:
-
+                 data_path: str = None,
+                 max_iterations: int = 5) -> None:
+        self.iterations = 0 
+        self.max_iterations = max_iterations
         base_dir = os.path.join(os.path.dirname(__file__), "data")
         self.manuscript_path = manuscript_path or os.path.join(base_dir, "manuscript.txt")
         self.data_path = data_path or os.path.join(base_dir, "data.csv")
         self.target = target
-        self.data = pd.read_csv(self.data_path)[[
-                                                    'INPUT PROPERTY: Microstructure',
-                                                    'INPUT PROPERTY: Processing method',
-                                                    'INPUT PROPERTY: BCC/FCC/other',
-                                                    'INPUT PROPERTY: Calculated Density (g/cm$^3$)',
-                                                    'OUTPUT PROPERTY: YS (MPa)'
-                                                ]]
+        self.data = pd.read_csv(self.data_path)
 
         # === Pipeline-populated attributes ===
 
@@ -54,6 +50,8 @@ class AutoFeaturizer:
 
         # From evaluation
         self.eval_report: Optional[Dict[str, Any]] = None
+        self.datalog = []
+        self.newfeaturelog = []
 
     # === Properties ===
     @property
@@ -91,4 +89,5 @@ class AutoFeaturizer:
     @construct_strategy.setter
     def construct_strategy(self, strategy: Dict) -> None:
         self.cur_feature_keys = list(strategy.keys())
+        self.newfeaturelog.append(strategy)
         self._construct_strategy = strategy

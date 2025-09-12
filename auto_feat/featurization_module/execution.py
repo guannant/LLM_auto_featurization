@@ -21,7 +21,7 @@ def feature_generation(llm, max_retries: int):
         """
         state must provide:
           - state.construct_strategy: dict {feature_name: description}  (instructions)
-          - state.feature_dict:       dict {feature_name: description}  (for logging)
+          - state.cur_feature_keys:       dict {feature_name: description}  (for logging)
           - state.clean_augmented_data: pandas.DataFrame (original dataset)
 
         state will be updated with:
@@ -76,7 +76,6 @@ def feature_generation(llm, max_retries: int):
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": user_msg}
             ]
-
             raw = llm(prompt)
             result = raw if isinstance(raw, str) else raw["choices"][0]["message"]["content"]
             last_result = result
@@ -104,7 +103,7 @@ def feature_generation(llm, max_retries: int):
 
                 if isinstance(modified_df, pd.DataFrame):
                     # If the code ran, but some required features are missing → RETRY with feedback
-                    missing_feats = [f for f in state.feature_dict.keys() if f not in modified_df.columns]
+                    missing_feats = [f for f in state.cur_feature_keys if f not in modified_df.columns]
                     if missing_feats:
                         state.error_message = (
                             "❌ Invalid instruction detected.\n"
@@ -125,7 +124,7 @@ def feature_generation(llm, max_retries: int):
                     # ✅ Success: overwrite state df and finish
                     state.clean_augmented_data = modified_df
                     print(f"✅ Successfully generated all required features at attempt {attempt+1}")
-                    return True
+                    return
 
             except Exception as e:
                 error_feedback = str(e)

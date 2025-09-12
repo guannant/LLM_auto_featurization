@@ -21,6 +21,7 @@ def main():
         target="OUTPUT PROPERTY: YS (MPa)",
         data_path=data_path,
         manuscript_path=manuscript_path,
+        max_iterations=3,
     )
 
     # --- Build LangGraph workflow ---
@@ -40,10 +41,28 @@ def main():
         print(f"{k}: {v}")
 
     print("\n=== Evaluation Report ===")
-    print(state.report)
+    for i in range(len(state.datalog)):
+        print(f"\n--- Iteration {i+1} ---")
+        report = state.datalog[i]
+        print(f"Model Type: {report['model_type']}")
+        print("Performance (Train):")
+        for metric, value in report["performance"]["train"].items():
+            print(f"  {metric}: {value}")
+        print("Performance (Test):")
+        for metric, value in report["performance"]["test"].items():
+            print(f"  {metric}: {value}")
+        print("Top Features:")
+        for feat in report["feature_importance"][:5]:
+            print(f"  {feat['variable']}: {feat['relative_importance']:.4f} ({feat['percentage']*100:.2f}%)")
+        print(f"Narrative: {report['narrative']}")
 
     print("\n=== Construct Strategy ===")
-    print(state.construct_strategy)
+    for i in range(len(state.newfeaturelog)):
+        print(f"\n--- Iteration {i+1} ---")
+        strategy = state.newfeaturelog[i]
+        for feat, desc in strategy.items():
+            print(f"{feat}:/n")
+            print(f"{desc}")
 
     print("\n=== Final DataFrame Head ===")
     print(state.clean_augmented_data.head())
