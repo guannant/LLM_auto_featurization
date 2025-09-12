@@ -18,9 +18,11 @@ class AutoFeaturizer():
     """
     def __init__(self,
                  papers: List[str],
-                 data: Union[str],
+                 data: pd.DataFrame,
                  target: str) -> None:
-        pass
+        self._data = data
+        self.target_key = target
+        self._papers = papers
 
     @property
     def literature_review(self) -> str:
@@ -43,6 +45,20 @@ class AutoFeaturizer():
         used
         """
         pass
+
+    @property
+    def target_key(self) -> str:
+        """
+        Specifies which column in the dataframe is considered the target
+        """
+        return self._target
+
+    @target_key.setter
+    def target_key(self, value: str) -> None:
+        if value not in self._data.columns:
+            raise ValueError(f'Target {value} not in data!')
+        self._target = value
+
     @property
     def construct_strategy(self) -> Dict:
         """
