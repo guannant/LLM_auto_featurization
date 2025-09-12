@@ -43,3 +43,10 @@ class AutoFeaturizer():
         used
         """
         pass
+    @property
+    def construct_strategy(self) -> Dict:
+        """
+        Returns a dictionary containing proposed (new) features as the key as well as how to construct them as the value
+        """
+        pass
+    
