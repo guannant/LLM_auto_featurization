@@ -9,9 +9,6 @@ import re
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 
-# Set your key
-os.environ["OPENAI_API_KEY"] = ""
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
 
 def feat_proposal(llm, max_retries=3):
@@ -31,8 +28,8 @@ def feat_proposal(llm, max_retries=3):
             second one explains how to obtain them from the existing features
     """
     def agent_node(state):
-        description = state.description
-        summary = state.summary
+        description = state.features_description
+        summary = state.literature_review
         target = state.target
         report = state.report
 
@@ -64,10 +61,11 @@ def feat_proposal(llm, max_retries=3):
         )
 
         # ✅ Proper LangChain message objects
+        
         prompt = [
-            SystemMessage(content=system_message),
-            HumanMessage(content=user_msg),
-        ]
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": user_msg}
+            ]
 
         def is_valid_result(result):
             try:
@@ -81,7 +79,7 @@ def feat_proposal(llm, max_retries=3):
 
         raw = None
         for _ in range(max_retries):
-            raw = llm.invoke(prompt).content  # ✅ .invoke and .content
+            raw = llm(prompt)
             if is_valid_result(raw):
                 parsed = json.loads(raw)
                 return (
