@@ -3,20 +3,21 @@
 ## 📖 Overview  
 
 Materials science research often involves two key ingredients:  
-1. **Domain knowledge from literature** (e.g., physics behind alloying, defect formation, thermodynamics).  
+1. **Knowledge from the literature** (e.g., physics behind alloying, defect formation, thermodynamics).  
 2. **Structured experimental or simulation datasets** (e.g., composition, microstructure, processing conditions).  
 
 Traditionally, connecting these two requires significant **manual effort**: scientists read papers, design features by hand, and then test them in ML models.  
 
-**AutoFeatSci** automates this process with a **multi-agent AI pipeline** that integrates natural language processing (NLP) and machine learning (ML).  
+**AutoFeatSci** automates this process with a **multi-agent LLM pipeline** that integrates domain reasoning with machine learning (ML).  
 
 Given a materials science paper 📄 and an associated dataset 📊, plus a **target property** to predict (e.g., hardness, hot cracking susceptibility, conductivity), AutoFeatSci:  
 
-- Analyzes and summarizes the relevant literature.  
-- Uses the summary and the dataset to **propose new feature candidates**.  
-- Automatically generates the Python code to construct those features.  
-- Evaluates the new features using ML (currently Random Forest).  
-- Iteratively improves the feature set based on feedback.  
+- Leverages a **literature-grounded reasoning module** powered by LLMs to **synthesize and distill insights** from materials science publications, extracting governing mechanisms, descriptors, and domain hypotheses.  
+- Employs a **data-aware interpretation module** that uses LLMs to **contextualize dataset features**, mapping raw variables to their underlying physical significance and linking them to knowledge derived from the literature.  
+- Generates **novel feature hypotheses** by **cross-referencing scientific insights with dataset semantics**, enabling construction of physically meaningful descriptors that go beyond naïve feature engineering.  
+- Validates proposed features through **systematic predictive modeling**, assessing their statistical and physical relevance with performance metrics (e.g., RMSE, R²) and feature importance analysis.  
+- Operates in an **iterative closed-loop framework**, where evaluation feedback continuously informs new feature hypotheses, driving convergence toward an optimized feature space aligned with the prediction target.  
+
 
 ---
 
@@ -39,43 +40,30 @@ By automating this loop, AutoFeatSci helps:
 AutoFeatSci is organized as a **multi-agent network**, where each agent has a specialized role.  
 
 ### 1. **Paper Analyzer Agent**  
-- Reads the provided materials science paper.  
-- Produces a concise **summary of domain knowledge**: important relationships, governing mechanisms, relevant descriptors.  
+- Creat your description to this agent
 
 ### 2. **Feature Description Agent**  
-- Reviews the dataset (columns, distributions, metadata).  
-- Generates a **semantic description** for each feature, linking it to physical meaning.  
+- Creat your description to this agent
 
 ### 3. **Feature Proposal Agent** (`feat_proposal`)  
-- Takes as input:  
-  - Feature descriptions.  
-  - Paper summarization.  
-  - Target property.  
-  - Reports from previous model runs.  
-- Proposes **new feature candidates** by combining existing features or designing transformations (e.g., ratios, normalized quantities).  
-- Outputs two dictionaries:  
-  - Physical meaning of each new feature.  
-  - How to obtain them from the original dataset.  
+- Creat your description to this agent  
 
 ### 4. **Feature Generation Agent**  
-- Implements the proposal.  
-- Automatically generates and executes **Python code** (using pandas/numpy) to construct the new features directly in the DataFrame.  
-- Handles invalid instructions gracefully (filling NaNs when necessary).  
+- Translates proposed feature hypotheses into concrete dataset transformations, ensuring that each candidate feature is materialized as a new column in the DataFrame.
+- Executes transformations reliably using standard numerical operations, while preserving the integrity of the original dataset.
 
-### 5. **Machine Learning Agent**  
-- Runs a **Random Forest** model using the newly constructed features.  
-- Evaluates model performance (RMSE, R², etc.) and feature importance.  
+### 5. **Evaluation Module**  
+- Continuously evaluates the effectiveness of the current featurization by training predictive models on the augmented dataset.  
+- Measures model performance using metrics such as RMSE, R², and feature importance to assess how well the engineered features capture the target property.  
+- Summarizes results into feedback reports, which are passed back to the **Feature Proposal Agent** for refinement.  
+- Based on this feedback, the proposal agent can accept the current features, reject underperforming ones, or propose new combinations for the next iteration.  
 
-### 6. **Feedback Loop**  
-- Model feedback (performance + feature importance) is summarized.  
-- Passed back to the **Feature Proposal Agent** to guide the next iteration.  
-- Loop continues until a specified number of iterations is reached.  
 
 ---
 
 ## 🚀 What This Project Brings  
 
-- **Domain-aware AutoML**: not just blind feature generation, but guided by materials science literature.  
+- **LLM-driven AutoML**: not just blind feature generation, but guided by literature reading and reasoning.  
 - **Closed-loop optimization**: features are iteratively refined based on predictive performance.  
 - **Interpretable outputs**: every feature proposal is documented with its physical significance and provenance from literature.  
 - **Scalable approach**: designed to be applied across different material systems and targets.  
