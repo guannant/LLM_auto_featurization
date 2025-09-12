@@ -17,29 +17,38 @@ class AutoFeaturizer:
     """
 
     def __init__(self,
-                 papers: List[str],
-                 data: Union[str, pd.DataFrame],
-                 target: str) -> None:
-        self.papers = papers
-        self._data = pd.read_csv(data) if isinstance(data, str) else data
+                 target: str,
+                 manuscript_path: str,
+                 data_path: str) -> None:
+        
+        self.manuscript_path = manuscript_path
+        self.data_path = data_path
         self.target = target
 
+        
+        
+        
+
         # === Pipeline-populated attributes ===
+
+        #From paper summarization
+        self.papers = None
+        self.data = None
         self._literature_review: Optional[str] = None
         self._features_description: Dict[str, str] = {}   # original + engineered
-        self._clean_augmented_data: pd.DataFrame = self._data.copy()
-        self._construct_strategy: Dict[str, str] = {}     # proposals for new features
+        self._clean_augmented_data: pd.DataFrame = self.data.copy()
+
 
         # From proposal
+        self._construct_strategy: Dict[str, str] = {}
         self.new_feature_significance: Optional[Dict[str, str]] = None
         self.new_feature_computation: Optional[Dict[str, str]] = None
 
         # From generation
-        self.generated_code: Optional[str] = None
         self.error_message: Optional[str] = None
 
         # From evaluation
-        self.eval_report: Optional[Dict[str, Any]] = None
+        self.report: Optional[Dict[str, Any]] = None
 
     # === Properties ===
     @property

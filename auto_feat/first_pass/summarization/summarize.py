@@ -90,8 +90,10 @@ def summarize(llm, max_retries=10):
         
         for _ in range(max_retries):
             raw = llm(prompt)
+            resd = ast.literal_eval(raw)
             if is_valid_result(raw):
-                state.property3 = ast.literal_eval(raw)  # update the state with the result
+                state.literature_review = resd['manuscript_summary']  # update the state with the result
+                state.features_description = resd['column_key']      # update the state with the result
                 return
         # If we exhaust all retries, we can return the an error or raise an exception
         raise RuntimeError(f"Failed after {max_retries} retries. Last output: {raw}")
