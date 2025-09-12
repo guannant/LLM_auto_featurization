@@ -20,7 +20,9 @@ class AutoFeaturizer():
                  papers: List[str],
                  data: pd.DataFrame,
                  target: str) -> None:
+        self._eval_rep = []
         self._data = data
+        # assert False, self._data.columns
         self.target_key = target
         self._papers = papers
 
@@ -44,7 +46,7 @@ class AutoFeaturizer():
         Returns dataframe containing original (raw) features, as well as any augmented features that have been already
         used
         """
-        pass
+        return self._data
 
     @property
     def target_key(self) -> str:
@@ -55,9 +57,18 @@ class AutoFeaturizer():
 
     @target_key.setter
     def target_key(self, value: str) -> None:
-        if value not in self._data.columns:
-            raise ValueError(f'Target {value} not in data!')
         self._target = value
+
+    @property
+    def eval_report(self) -> List[Dict]:
+        """
+        Provides history of evaluation reports
+        """
+        return self._eval_rep
+
+    @eval_report.setter
+    def eval_report(self, report: Dict):
+        self._eval_rep.append(report)
 
     @property
     def construct_strategy(self) -> Dict:
