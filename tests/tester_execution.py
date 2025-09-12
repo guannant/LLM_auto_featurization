@@ -5,6 +5,7 @@ import openai
 import time
 
 from execution import feature_generation  # replace with actual filename
+from summarize import summarize
 
 MODEL = "argo:gpt-5-mini"
 client = openai.OpenAI(
