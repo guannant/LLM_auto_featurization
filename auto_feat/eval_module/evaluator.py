@@ -68,13 +68,13 @@ def create_evaluation_agent_wrap(max_retries: int = 3, task: str = "regression")
                 if task == "regression":
                     report["performance"]["train"] = {
                         "MSE": mean_squared_error(y_train, y_train_pred),
-                        "RMSE": mean_squared_error(y_train, y_train_pred, squared=False),
+                        "RMSE": np.sqrt(mean_squared_error(y_test, y_test_pred)),
                         "R2": r2_score(y_train, y_train_pred),
                         "N Obs": len(y_train),
                     }
                     report["performance"]["test"] = {
                         "MSE": mean_squared_error(y_test, y_test_pred),
-                        "RMSE": mean_squared_error(y_test, y_test_pred, squared=False),
+                        "RMSE": np.sqrt(mean_squared_error(y_test, y_test_pred)),
                         "R2": r2_score(y_test, y_test_pred),
                         "N Obs": len(y_test),
                     }

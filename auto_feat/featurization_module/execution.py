@@ -90,7 +90,6 @@ def feature_generation(llm, max_retries: int):
                 continue
 
             code = extract_code(result)
-            print(code)
             # --- Execute the code on the provided df ---
             local_vars = {"df": state.clean_augmented_data}
             try:

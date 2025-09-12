@@ -46,7 +46,7 @@ class AutoFeaturizer:
         self.error_message: Optional[str] = None
 
         # From evaluation
-        self.report: Optional[Dict[str, Any]] = None
+        self.eval_report: Optional[Dict[str, Any]] = None
 
     # === Properties ===
     @property

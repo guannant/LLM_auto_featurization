@@ -4,7 +4,9 @@ import pandas as pd
 import time
 from openai import APIStatusError, InternalServerError
 import openai
+import sys
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from auto_feat.first_pass.summarization.summarize import summarize
 from auto_feat import AutoFeaturizer
 
