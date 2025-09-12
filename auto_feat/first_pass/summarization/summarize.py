@@ -1,115 +1,99 @@
 import ast
-import openai
-
-MODEL = "argo:gpt-5"
-
-client = openai.OpenAI(
-    api_key="whatever+random",
-    base_url="http://localhost:52483/v1",
-)
 
 
-def summarize(manuscript_path, data_path):
+def summarize(llm, max_retries=10):
+    # max_retries is used for rerun the llm call if the output is not in the correct format (sometimes llm can output invalid json etc)
+    def summarizer(state):
+        """
+        Reviews the manuscript and data, both in ASCII format, and provides a summary, a descriptive key
+        for the data fields, and notes on both.
 
-    """
-    Reviews the manuscript and data, both in ASCII format, and provides a summary, a descriptive key
-    for the data fields, and notes on both.
+        Args:
+            manuscript_path: path for the manuscript text file
+            data_path: path for the data text file
 
-    Args:
-        manuscript_path: path for the manuscript text file
-        data_path: path for the data text file
+        Returns:
+            returns a dictionary with keys 'manuscript_summary', 'column_key', and 'notes'. 'column key' is a nested dictionary.
 
-    Returns:
-        returns a dictionary with keys 'manuscript_summary', 'column_key', and 'notes'. 'column key' is a nested dictionary.
+        """
 
-    """
+        # state: AutoFeaturizer class instance
+        manuscript_path = state.manuscript_path
+        data_path = state.data_path
 
-    # Read the manuscript file
-    try:
-        with open(manuscript_path, 'r', encoding='utf-8') as f:
-            manuscript_text = f.read()
-    except Exception as e:
-        print(f"Error reading manuscript file: {e}")
-        return
-    
-    # Read the data file
-    try:
-        with open(data_path, 'r', encoding='utf-8') as f:
-            data_lines = f.readlines()[:5]  # Read first 5 lines
-            data_text = ''.join(data_lines)
-    except Exception as e:
-        print(f"Error reading data file: {e}")
-        return
+        # Read the manuscript file
+        try:
+            with open(manuscript_path, 'r', encoding='utf-8') as f:
+                manuscript_text = f.read()
+        except Exception as e:
+            print(f"Error reading manuscript file: {e}")
+            return
 
-    content = "Analyze the manuscript and data files provided in the text below " + \
-        "and provide an output in the following nested dictionary format: \n" +\
-        "{\n" +\
-        " 'manuscript_summary':'<generated summary>',\n" +\
-        " 'column key': {\n" +\
-        "                '<column 1 name>': '<column 1 physical interpretation>',\n" +\
-        "                '<column 2 name>': '<column 2 physical interpretation>',\n" +\
-        "                ...\n" +\
-        "                '<column M name>': '<column M physical interpretation>',\n" +\
-        "               },\n" +\
-        " 'notes: '<any notes or context that the LLM thinks is important to relay>'}\n\n" +\
-        "manuscript text start\n---------------\n" +\
-        manuscript_text +\
-        "\n-------------------\nmanuscript text end\n\n" +\
-        "data file start\n---------------\n" +\
-        data_text +\
-        "\n-------------------\ndata file end\n\n"
+        # Read the data file
+        try:
+            with open(data_path, 'r', encoding='utf-8') as f:
+                data_lines = f.readlines()[:5]  # Read first 5 lines
+                data_text = ''.join(data_lines)
+        except Exception as e:
+            print(f"Error reading data file: {e}")
+            return
 
-    messages = [
-        {
-            "role": "user",
-            "content": content,
-        },
-    ]
+        # ---------------- SYSTEM PROMPT ----------------
+        system_message = (
+            "System: You are tasked with understanding and summarizing a scientific text with particular attention to the use of the data for development of machine learning models.\n\n"
+            "Problem summary: Analyze the manuscript and data files provided in the user message\n"
+            "Output format (STRICT): Provide output in the following nested dictionary format\n"
+            "\n==== Output format ====\n"
+            "{\n"
+            " 'manuscript_summary':'<generated summary>',\n"
+            " 'column_key': {\n"
+            "                '<column 1 name>': '<column 1 physical interpretation and notes>',\n"
+            "                '<column 2 name>': '<column 2 physical interpretation and notes>',\n"
+            "                ...\n"
+            "                '<column M name>': '<column M physical interpretation and notes>',\n"
+            "               },\n"
+            " 'notes': '<any notes or context that you think is important to relay>'\n\n"
+            "}\n"
+        )
 
-    try:
-        response = client.chat.completions.create(
-            model=MODEL,
-            messages=messages,
-        ).choices[0].message.content.strip()
-    except Exception as e:
-        print("\nError:", e)
+        # ---------------- USER PROMPT ----------------
+        user_msg = (
+            "\n==== Manuscript text ====\n"
+            f"{manuscript_text}\n"
+            "==== Data ====\n"
+            f"{data_text}\n"
+            "\n\nInstructions:\n"
+            "No extra instructions necessary\n"
+        )
 
-    # review and correct the previously generated content
-    content_review = "Review the LLM response included below and make any necessary corrections " +\
-        "to the syntax, format and content. The response should be in the form of a nested dictionary with " +\
-        "top level keys 'manuscript_summary', 'column_key', and 'notes'. 'column key' is a dictionary." +\
-        "Also consider the original prompt that was provided, as included below.\n\n" +\
-        "input_string start\n-----\n" +\
-        response +\
-        "\n-----\ninput_string end" + \
-        "previous prompt start\n-----\n" +\
-        content +\
-        "\n-----\nprevious prompt end"
+        prompt = [
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": user_msg}
+            ]
 
-    messages = [
-        {
-            "role": "user",
-            "content": content_review,
-        },
-    ]
+        # Retry loop:
+        def is_valid_result(result):
 
-    try:
-        response = client.chat.completions.create(
-            model=MODEL,
-            messages=messages,
-        ).choices[0].message.content.strip()
-        return ast.literal_eval(response)
-    except Exception as e:
-        print("\nError:", e)
+            resd = ast.literal_eval(result)
+            try:
+                check1 = 'manuscript_summary' in resd.keys()
+                check2 = 'column_key' in resd.keys()
+                check3 = 'notes' in resd.keys()
+                check4 = len(resd['column_key'].keys()) > 1
+                check = check1 and check2 and check3 and check4
 
+            except Exception as e:
+                print(f'json improperly formated: {resd}')
+                return False
 
-if __name__ == "__main__":
+            return check
+        
+        for _ in range(max_retries):
+            raw = llm(prompt)
+            if is_valid_result(raw):
+                state.property3 = ast.literal_eval(raw)  # update the state with the result
+                return
+        # If we exhaust all retries, we can return the an error or raise an exception
+        raise RuntimeError(f"Failed after {max_retries} retries. Last output: {raw}")
 
-    data_path = "data.csv"
-    manuscript_path = "manuscript.txt"
-
-    response = summarize(manuscript_path, data_path)
-
-    print("manuscript summary: ", response['manuscript_summary'], "\n\n")
-    print("column key: (first entry only)", response['column_key']['PROPERTY: Exp. Density (g/cm$^3$)'], "\n\n")
-    print("notes: ", response['notes'], "\n\n")
+    return summarizer
