@@ -43,8 +43,21 @@ class State:
     pass
 
 
-class TestFeatureGeneration(unittest.TestCase):
+class TestSummarizer(unittest.TestCase):
 
+    def test_summarizer(self):
+        state = State()
+
+        state.data_path = "data.csv"  # replace with actual path
+        state.manuscript_path = "manuscript.txt"  # replace with actual path
+
+        agent = summarize(dummy_llm, max_retries=5)
+        success = agent(state)
+        # self.assertIn("feature_sum", state.clean_augmented_data.columns)
+
+
+class TestFeatureGeneration(unittest.TestCase):
+    
     def test_basic_generation(self):
         state = State()
         state.construct_strategy = {
