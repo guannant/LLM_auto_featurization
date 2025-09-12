@@ -14,14 +14,22 @@ class TestEvalModule(unittest.TestCase):
         mpea_dir = Path.home() / "Box/LLM hackathon 2025 Featurizers/datasets/MPEA/"
         paper = str(mpea_dir.absolute()) + '/manuscript.txt'
         data = pd.read_csv(str(mpea_dir.absolute()) + '/data.csv')
+        target='OUTPUT PROPERTY: Exp. Young modulus (GPa)'
+
+        # Clean up a bit
+        data.drop(labels=['IDENTIFIER: Reference ID', 'FORMULA', 'INPUT PROPERTY: Microstructure',
+                          'INPUT PROPERTY: Processing method', 'INPUT PROPERTY: BCC/FCC/other',
+                          'INPUT PROPERTY: Type of test', 'REFERENCE: title', 'REFERENCE: doi', 'REFERENCE: year'],
+                          axis=1, inplace=True)
+        data = data.dropna(subset=[target])
 
         state = AutoFeaturizer(papers=[paper],
                                 data=data,
-                                target='OUTPUT PROPERTY: Exp. Young modulus (GPa)')
+                                target=target)
         
         dummy = create_evaluation_agent_wrap()
         success = dummy(state)
-        print(success.eval_report)
+        print(state.eval_report)
         self.assertTrue(len(state.eval_report) == 1)
         
 
