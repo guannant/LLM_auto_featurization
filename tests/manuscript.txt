@@ -1,0 +1,529 @@
+Skip to main content
+Advertisement
+
+Scientific Data
+View all journals
+Search
+Log in
+Explore content
+About the journal
+Publish with us
+Sign up for alerts
+RSS feed
+nature  scientific data  data descriptors  article
+Data Descriptor
+Open access
+Published: 08 December 2020
+Expanded dataset of mechanical properties and observed phases of multi-principal element alloys
+Christopher K. H. Borg, Carolina Frey, Jasper Moh, Tresa M. Pollock, Stéphane Gorsse, Daniel B. Miracle, Oleg N. Senkov, Bryce Meredig & James E. Saal 
+Scientific Data volume 7, Article number: 430 (2020) Cite this article
+
+17k Accesses
+
+102 Citations
+
+1 Altmetric
+
+Metricsdetails
+
+Abstract
+This data article presents a compilation of mechanical properties of 630 multi-principal element alloys (MPEAs). Built upon recently published MPEA databases, this article includes updated records from previous reviews (with minor error corrections) along with new data from articles that were published since 2019. The extracted properties include reported composition, processing method, microstructure, density, hardness, yield strength, ultimate tensile strength (or maximum compression strength), elongation (or maximum compression strain), and Young’s modulus. Additionally, descriptors (e.g. grain size) not included in previous reviews were also extracted for articles that reported them. The database is hosted and continually updated on an open data platform, Citrination. To promote interpretation, some data are graphically presented.
+
+Measurement(s)
+
+alloy • oxygen content • carbon content • nitrogen content • yield strength • elongation • ultimate strength • hardness • density • grain size • observed phases
+
+Technology Type(s)
+
+digital curation
+
+Factor Type(s)
+
+alloy processing method • test temperature • test type • alloy composition
+
+Machine-accessible metadata file describing the reported data: https://doi.org/10.6084/m9.figshare.12804137
+
+Similar content being viewed by others
+
+A compilation of experimental data on the mechanical properties and microstructural features of Ti-alloys
+Article Open access
+26 April 2022
+
+Harnessing metastability for grain size control in multiprincipal element alloys during additive manufacturing
+Article Open access
+12 February 2025
+
+Computational discovery of ultra-strong, stable, and lightweight refractory multi-principal element alloys. Part I: design principles and rapid down-selection
+Article Open access
+29 May 2023
+Background & Summary
+Traditional engineering alloys consist of a single principal element (e.g., Fe in steels and Ni in superalloys) and one or more solute elements present in much lower concentrations than the principal element. In contrast, multi-principal element alloys (MPEAs), also called complex concentrated alloys (CCAs), are a class of alloys where no single element dominates the composition and 3 or more principal elements are present in significant amounts. The term high entropy alloy (HEA) is often used to describe MPEAs with 5 or more principal elements and medium entropy alloy typically describes MPEAs with 3 or 4 principal elements. These alloys exhibit unique and extensively tunable properties compared to traditional single principal element alloys1,2,3,4,5,6,7,8,9,10,11.
+
+A primary driver of interest in MPEAs is the significant expansion in compositional design space for new alloy development made available compared to traditional alloys12. Assuming a palette of 30 elements to choose from, there are approximately 143,000 potential 5-component systems and 594,000 potential 6-component systems to explore, with countless compositions within each system to synthesize and characterize, often with unknown processing routes. This large design space presents a challenge, since examining each system experimentally is prohibitively expensive. As such, there has been recent interest in employing computational and data-driven methods to accelerate exploration of MPEA systems and identify promising candidates for experimental study13,14.
+
+Since the approach for MPEA design was defined in 20041,2, there has been a growing body of work in the literature exploring these systems experimentally, with a focus on mechanical properties. An accurate accounting of high quality data from these studies is necessary to aid in further MPEA development, such as identifying gaps in design space, training machine learning models, flagging of outliers, etc. Given the large interest in this class of alloys, data on new systems are rapidly being published, necessitating frequent database updates to maintain relevancy. The updated MPEA mechanical properties database presented here combines data from previous reviews, makes corrections to data, and adds new data from articles published in 2019. The complete database will be hosted online in conjunction with a template to ensure routine updating and public availability of the database.
+
+Methods
+Extraction from literature
+Two previous reviews of MPEA mechanical properties from 201815,16 were used to populate the initial database. When combined, these reviews contained data on 296 unique MPEA compositions (614 composition-property combinations). The additional data extracted for this study included 334 unique MPEA compositions (931 composition-property combinations), more than doubling the existing data. During extraction and digitization of the initial database, various typos and extraction errors were identified and corrected. Once digitized, the initial database was combined with the newly extracted data and put into single spreadsheet, as demonstrated in Table 1.
+
+Table 1 The 25 MPEAs in the database with the highest yield strength (at room temperature), illustrating how a subset of the data are stored in each field.
+Full size table
+To identify new sources of MPEA data, a keyword search for “high entropy alloy” was conducted on Web of Science (query performed October 2019) and responses were filtered for articles published in 2019. From this query, 136 articles were identified as potentially viable sources of experimental MPEA mechanical property data (i.e. articles reporting single and multiphase materials with a minimum of three elements). Defined in detail in the Data Records section, relevant mechanical property data were extracted from plots, tables, and text and input into a tabular format. To extract data from plots, webplotdigitizer17 was employed. The newly extracted data were combined with the previously digitized data to complete the database. A high level overview of the extraction workflow is provided in Fig. 1.
+
+Fig. 1
+figure 1
+The database generation workflow. Records are first extracted from various publications and input into a defined template format. Post-processing tools are used to identify outliers or erroneous data points. A detailed review of the number of records and properties contained in the resultant database is presented in Table 2.
+
+Full size image
+Data from future publications
+For any data that are relevant, but not present in the current review, researchers are encouraged to make their own contributions. Using the template provided on GitHub18 data extraction and digitization can be performed by many groups asynchronously. This template is formatted such that data can be easily uploaded to Citrination, an online platform for materials data19. Upon notification, any data added to the database on Citrination will be verified for integrity by the authors. Researchers are also encouraged to upload their data to other open data resources and contact the authors directly for integration with the MPEA database.
+
+Data Records
+The database contains 1545 records from 265 articles. An individual record is defined as having a unique composition, property, temperature, reference combination. For example, if two articles measured the yield strength of HfNbTaTiZr at five temperatures, the number of records extracted is ten. On a per record basis, this database presents a > 100% improvement in the amount of available data when compared to the data presented in the 2018 reviews.
+
+The data in the database are extracted to best represent the data made available by the authors. Often, not all properties in the database are reported for every record. For example, despite the importance of grain size and interstitial contents on properties, particularly for refractory MPEAs, these features are missing from many articles. The data are made available on Figshare20 and in various tabular formats on the project GitHub18. The data have also been digitized into Physical Information File (PIF) records, an open-source json-based schema for materials data21. PIF records are hosted on Citrination (https://citrination.com/datasets/190954) to provide easy access for data visualizations and machine learning. Each data source will be updated continuously as more data are extracted.
+
+The database records consist of the following fields, as available:
+
+Alloy composition: Normalized and alphabetized nominal alloy composition, in atomic percent. Validation and alphabetization were performed using the Pymatgen Composition module22.
+
+Microstructure: The experimentally observed phases (e.g. FCC, BCC, B2). Any phases that were not BCC, FCC, HCP, L12, B2, or Laves were labeled as “Sec. = secondary” or “Other”.
+
+Processing method: The conditions under which the alloy was synthesized. CAST = as-cast or directional casting. POWDER = gas atomization, mechanical alloying, sintering, spark plasma sintering, or vacuum hot pressing. WROUGHT = cold-rolled, hot-rolled, or hot-forged. ANNEAL = annealed, homogenized, or aged. OTHER = additive manufacturing, hot isostatic pressing, or severe plastic deformation.
+
+Grain size (μm): The average grain size of the alloy.
+
+Exp. Density (g/cm3): Experimentally reported density.
+
+Calculated Density (g/cm3): Density estimated using the rule of mixtures (ROM): \(\rho =\Sigma {x}_{i}{M}_{i}/\Sigma {x}_{i}{V}_{i}\) where xi, Mi, Vi are the atomic fraction, molar mass and molar volume of the element i. Elemental density values were obtained via Pymatgen22.
+
+Type of test: Indicator for whether mechanical testing was performed under tension (T) or compression (C).
+
+Test temperature (°C): Temperature at which mechanical testing was performed.
+
+YS (MPa): Measured yield strength.
+
+UTS (MPa): Measured ultimate tensile strength (for tensile tests) or maximum compression strength (for compression tests).
+
+HV: Experimentally reported Vickers hardness.
+
+Elongation (%): Measured elongation at failure or maximum reported compression strain.
+
+Elongation plastic (%): Measured plastic elongation or plastic compression strain.
+
+Exp. Young’s modulus (GPa): The experimental Young’s modulus, when reported.
+
+Calculated Young’s modulus (GPa) Young’s modulus calculated using the rule of mixtures (ROM) for single phase solid solutions only: \(E=\Sigma {x}_{i}{V}_{i}{E}_{i}/\Sigma {x}_{i}{V}_{i}\) where xi, Vi, and Ei are the atomic fraction, molar volume, and Young’s modulus of the alloy element i. Elemental Young’s modulus values were obtained via Pymatgen22.
+
+O content (wppm): Measured oxygen content.
+
+N content (wppm): Measured nitrogen content.
+
+C content (wppm): Measured carbon content.
+
+A portion of the database (the 25 alloys with the highest yield strength at room temperature) is highlighted in Table 1 to provide an example for how data are stored in each field. This is only a subset of the properties collected in the database. Statistics on all properties extracted for the database are presented in Table 2.
+
+Table 2 Statistics of the properties captured in the database.
+Full size table
+Figure 2 illustrates the relationship between yield strength and elongation for compressive and tensile tests. Figure 3 illustrates the temperature dependence of yield strength across three microstructure classifications (single-phase BCC, single-phase FCC, and multiphase/other).
+
+Fig. 2
+figure 2
+Room-temperature yield strength values plotted against elongation. For visualization purposes, elongation results in compression have been assigned negative values in the plot. Points are colored by structural class (single phase BCC (turquoise), single phase FCC (gold), other (magenta)). “Other” is defined as any report of an MPEA that is either multiphase, or single-phase but not FCC or BCC.
+
+Full size image
+Fig. 3
+figure 3
+Yield strength as a function of temperature for three classes of HEAs ((a) single phase BCC (turquoise), (b) single phase FCC (gold), (c) other (magenta)). “Other” is defined as any report of an MPEA that is either multiphase, or single-phase but not FCC or BCC. The trend may suggest that BCC MPEAs have better high-temperature strength, but also highlights the lack of data available for FCC MPEAs.
+
+Full size image
+Technical Validation
+Review by domain experts
+The data were collected, processed, and verified for accuracy by a team familiar with MPEAs and their properties. This domain-knowledge was useful during data compilation and formatting of the dataset.
+
+Extreme value identification
+During the processing of the database, various statistical plots were generated to assist in the identification of outliers and subsequent removal or correction of inaccurate data. Figure 4 is provided as an example of the outlier identification process. Box plots are generated for properties of interest and extreme values in the tails of the distribution are investigated. Extreme values that could not be verified were either removed or corrected.
+
+Fig. 4
+figure 4
+Workflow associated with extreme property value verification and (if necessary) correction. Step 1: Box plots were generated for properties of interest (e.g. alloy hardness) and the source of any extreme values were investigated. Step 2: In this case, the inaccuracy was units-related; the value was recorded as in units of GPa, however the database expected units of HV. Step 3: The value with correct units was updated in place of the originally recorded value. Original source reproduced with data from Jumaev et al.26.
+
+Full size image
+Usage Notes
+This expanded dataset on MPEAs is intended for use to guide experiment for future alloy development. As shown in Figs. 2 and 3 the dataset can produce informative visualizations to guide researcher efforts. Each record can be accessed programmatically via the Citrination API23. In conjunction with traditional Python data processing packages (e.g. pandas) the dataset will be useful as training data for machine learning applications. To ensure data quality, each record is associated with a digital object identifier (DOI) link to the original source. To improve the predictive capabilities of subsequent machine learning models, researchers are encouraged to contribute to this database through the addition of new data as it is generated.
+
+Code availability
+Data processing, validation and statistical plotting were performed using visualization tools on Citrination and Jupyter notebooks24 in a Python 325 environment. The code is available on GitHub (https://github.com/CitrineInformatics/MPEA_dataset).
+
+References
+Cantor, B., Chang, I., Knight, P. & Vincent, A. Microstructural development in equiatomic multicomponent alloys. Materials Science and Engineering: A 375–377, 213–218 (2004).
+
+Article
+ 
+Google Scholar
+ 
+
+Yeh, J.-W. et al. Nanostructured high-entropy alloys with multiple principal elements: novel alloy design concepts and outcomes. Advanced Engineering Materials 6, 299–303 (2004).
+
+Article
+ 
+CAS
+ 
+Google Scholar
+ 
+
+Senkov, O., Wilks, G., Miracle, D., Chuang, C. & Liaw, P. Refractory high-entropy alloys. Intermetallics 18, 1758–1765 (2010).
+
+Article
+ 
+CAS
+ 
+Google Scholar
+ 
+
+Gludovatz, B. et al. A fracture-resistant high-entropy alloy for cryogenic applications. Science 345, 1153–1158 (2014).
+
+Article
+ 
+ADS
+ 
+CAS
+ 
+Google Scholar
+ 
+
+Miracle, D. Critical assessment 14: High entropy alloys and their development as structural materials. Materials Science and Technology 31, 1142–1147 (2015).
+
+Article
+ 
+CAS
+ 
+Google Scholar
+ 
+
+Senkov, O. & Semiatin, S. Microstructure and properties of a refractory high-entropy alloy after cold working. Journal of Alloys and Compounds 649, 1110–1123 (2015).
+
+Article
+ 
+CAS
+ 
+Google Scholar
+ 
+
+Miracle, D. B. & Senkov, O. N. A critical review of high entropy alloys and related concepts. Acta Materialia 122, 448–511 (2017).
+
+Article
+ 
+ADS
+ 
+CAS
+ 
+Google Scholar
+ 
+
+Gorsse, S., Miracle, D. B. & Senkov, O. N. Mapping the world of complex concentrated alloys. Acta Materialia 135, 177–187 (2017).
+
+Article
+ 
+ADS
+ 
+CAS
+ 
+Google Scholar
+ 
+
+Senkov, O. N., Miracle, D. B., Chaput, K. J. & Couzinie, J.-P. Development and exploration of refractory high entropy alloys a review. Journal of Materials Research 33, 3092–3128 (2018).
+
+Article
+ 
+ADS
+ 
+CAS
+ 
+Google Scholar
+ 
+
+Gwalani, B. et al. Tensile yield strength of a single bulk Al0.3CoCrFeNi high entropy alloy can be tuned from 160 MPa to 1800 MPa. Scripta Materialia 162, 18–23 (2019).
+
+Article
+ 
+CAS
+ 
+Google Scholar
+ 
+
+Senkov, O., Gorsse, S. & Miracle, D. B. High temperature strength of refractory complex concentrated alloys. Acta Materialia 175, 394–405 (2019).
+
+Article
+ 
+ADS
+ 
+CAS
+ 
+Google Scholar
+ 
+
+Gorsse, S., Couzinié, J.-P. & Miracle, D. B. From high-entropy alloys to complex concentrated alloys. Comptes Rendus Physique 19, 721–736 (2018).
+
+Article
+ 
+ADS
+ 
+CAS
+ 
+Google Scholar
+ 
+
+Huang, W., Martin, P. & Zhuang, H. L. Machine-learning phase prediction of high-entropy alloys. Acta Materialia 169, 225–236 (2019).
+
+Article
+ 
+ADS
+ 
+CAS
+ 
+Google Scholar
+ 
+
+Wen, C. et al. Machine learning assisted design of high entropy alloys with desired property. Acta Materialia 170, 109–117 (2019).
+
+Article
+ 
+ADS
+ 
+CAS
+ 
+Google Scholar
+ 
+
+Couzinié, J.-P., Senkov, O., Miracle, D. & Dirras, G. Comprehensive data compilation on the mechanical properties of refractory high-entropy alloys. Data in Brief 21, 1622–1641 (2018).
+
+Article
+ 
+Google Scholar
+ 
+
+Gorsse, S., Nguyen, M., Senkov, O. N. & Miracle, D. B. Database on the mechanical properties of high entropy alloys and complex concentrated alloys. Data in Brief 21, 2664–2678 (2018).
+
+Article
+ 
+CAS
+ 
+Google Scholar
+ 
+
+Rohatgi, A. Webplotdigitizer: Version 4.3. https://github.com/ankitrohatgi/WebPlotDigitizer/ (2020).
+
+Borg, C. & Saal, J. Expanded dataset of mechanical properties and observed phases of multi-principal element alloys. https://github.com/CitrineInformatics/MPEA_dataset (2020).
+
+O’Mara, J., Meredig, B. & Michel, K. Materials data infrastructure: a case study of the citrination platform to examine data import, storage, and access. JOM 68, 2031–2034 (2016).
+
+Article
+ 
+Google Scholar
+ 
+
+Borg, C. et al. Expanded dataset of mechanical properties and observed phases of multi-principal element alloys. figshare, https://doi.org/10.6084/m9.figshare.12642953 (2020).
+
+Michel, K. & Meredig, B. Beyond bulk single crystals: a data format for all materials structure-property-processing relationships. MRS Bulletin 41, 617 (2016).
+
+Article
+ 
+Google Scholar
+ 
+
+Ong, S. P. et al. Python materials genomics (pymatgen): A robust, open-source python library for materials analysis. Computational Materials Science 68, 314–319 (2013).
+
+Article
+ 
+CAS
+ 
+Google Scholar
+ 
+
+Citrine Informatics. Python citrination client, version 3.0.0. https://github.com/CitrineInformatics/python-citrination-client (2020).
+
+Kluyver, T. et al. Jupyter notebooks – a publishing format for reproducible computational workflows. In Loizides, F. & Schmidt, B. (eds.) Positioning and Power in Academic Publishing: Players, Agents and Agendas, 87–90 (IOS Press, 2016).
+
+Van Rossum, G. & Drake, F. L. Python 3 Reference Manual. (CreateSpace, Scotts Valley, CA, 2009).
+
+Google Scholar
+ 
+
+Jumaev, E. et al. Chemical evolution-induced strengthening on alcocrni dual-phase high-entropy alloy with high specific strength. Journal of Alloys and Compounds 777, 828–834 (2019).
+
+Article
+ 
+CAS
+ 
+Google Scholar
+ 
+
+Download references
+
+Acknowledgements
+This work was supported by a grant from the Schmidt Futures Foundation. The authors would also like to acknowledge Dr. Robert Ritchie and Jon Ell for their input and comments during the preparation of the database. Work by O.N. Senkov was supported through the Air Force on-site contract FA8650-15-D-5230 managed by UES, Inc., Dayton, Ohio.
+
+Author information
+Authors and Affiliations
+Citrine Informatics, Redwood City, CA, United States
+
+Christopher K. H. Borg, Bryce Meredig & James E. Saal
+
+Materials Department, University of California at Santa Barbara, Santa Barbara, California, 93101, USA
+
+Carolina Frey, Jasper Moh & Tresa M. Pollock
+
+CNRS, Univ. Bordeaux, Bordeaux INP, ICMCB, UMR 5026, F-33600, Pessac, France
+
+Stéphane Gorsse
+
+Air Force Research Laboratory, Materials and Manufacturing Directorate, Wright-Patterson AFB, OH, 45433, USA
+
+Daniel B. Miracle & Oleg N. Senkov
+
+Contributions
+Chris Borg performed the database construction and wrote the manuscript. Carolina Frey assisted in data validation and construction of database. Jasper Moh extracted and validated data from research articles. Dan Miracle provided technical expertise to MPEA data and reviewed the manuscript. Oleg Senkov extracted data from research articles and reviewed the manuscript. Stéphane Gorsse provided technical expertise to MPEA data, extracted data from research articles and reviewed the manuscript. Bryce Meredig oversaw the construction of the database and reviewed the manuscript. Tresa Pollock oversaw the construction of the database and reviewed the manuscript. James Saal aided in the construction of the database and writing of the manuscript.
+
+Corresponding author
+Correspondence to Christopher K. H. Borg.
+
+Ethics declarations
+Competing interests
+The authors declare no competing interests.
+
+Additional information
+Publisher’s note Springer Nature remains neutral with regard to jurisdictional claims in published maps and institutional affiliations.
+
+Rights and permissions
+Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made. The images or other third party material in this article are included in the article’s Creative Commons license, unless indicated otherwise in a credit line to the material. If material is not included in the article’s Creative Commons license and your intended use is not permitted by statutory regulation or exceeds the permitted use, you will need to obtain permission directly from the copyright holder. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/.
+
+The Creative Commons Public Domain Dedication waiver http://creativecommons.org/publicdomain/zero/1.0/ applies to the metadata files associated with this article.
+
+Reprints and permissions
+
+About this article
+Check for updates. Verify currency and authenticity via CrossMark
+Cite this article
+Borg, C.K.H., Frey, C., Moh, J. et al. Expanded dataset of mechanical properties and observed phases of multi-principal element alloys. Sci Data 7, 430 (2020). https://doi.org/10.1038/s41597-020-00768-9
+
+Download citation
+
+Received
+13 July 2020
+
+Accepted
+19 November 2020
+
+Published
+08 December 2020
+
+DOI
+https://doi.org/10.1038/s41597-020-00768-9
+
+Share this article
+Anyone you share the following link with will be able to read this content:
+
+Get shareable link
+Provided by the Springer Nature SharedIt content-sharing initiative
+
+Subjects
+Mechanical properties
+Metals and alloys
+This article is cited by
+Sustainability indicators in high entropy alloy design: an economic, environmental, and societal database
+Stéphane GorsseThéo LangloisMatthew R. Barnett
+Scientific Data (2025)
+
+Design of BCC/FCC dual-solid solution refractory high-entropy alloys through CALPHAD, machine learning and experimental methods
+Longjun HeChaoyue WangXianglin Zhou
+npj Computational Materials (2025)
+
+Sustainability of High Entropy Alloys and Do They Have a Place in a Circular Economy?
+M. R. BarnettS. Gorsse
+Metallurgical and Materials Transactions A (2025)
+
+Comparing Machine Learning Models for Strength and Ductility in High-Entropy Alloys
+Diego Ibarra-HoyosQuentin SimmonsS. Joseph Poon
+High Entropy Alloys & Materials (2025)
+
+Developing new high-entropy alloys with enhanced hardness using a hybrid machine learning approach: integrating interpretability and NSGA-II optimization
+Debsundar DeyAnik PalManojit Ghosh
+Journal of Materials Science (2025)
+
+Download PDF
+Sections
+Figures
+References
+Abstract
+Background & Summary
+Methods
+Data Records
+Technical Validation
+Usage Notes
+Code availability
+References
+Acknowledgements
+Author information
+Ethics declarations
+Additional information
+Rights and permissions
+About this article
+This article is cited by
+Advertisement
+
+Scientific Data (Sci Data) ISSN 2052-4463 (online)
+nature.com sitemap
+About Nature Portfolio
+About us
+Press releases
+Press office
+Contact us
+Discover content
+Journals A-Z
+Articles by subject
+protocols.io
+Nature Index
+Publishing policies
+Nature portfolio policies
+Open access
+Author & Researcher services
+Reprints & permissions
+Research data
+Language editing
+Scientific editing
+Nature Masterclasses
+Research Solutions
+Libraries & institutions
+Librarian service & tools
+Librarian portal
+Open research
+Recommend to library
+Advertising & partnerships
+Advertising
+Partnerships & Services
+Media kits
+Branded content
+Professional development
+Nature Awards
+Nature Careers
+Nature Conferences
+Regional websites
+Nature Africa
+Nature China
+Nature India
+Nature Japan
+Nature Middle East
+Privacy Policy Use of cookies Your privacy choices/Manage cookies Legal notice Accessibility statement Terms & Conditions Your US state privacy rights
+Springer Nature
+© 2025 Springer Nature Limited
+
+CloseNature Briefing
+Sign up for the Nature Briefing newsletter — what matters in science, free to your inbox daily.
+
+Email address
+e.g. jo.smith@university.ac.uk
+ Sign up
+
+I agree my information will be processed in accordance with the Nature and Springer Nature Limited Privacy Policy.
