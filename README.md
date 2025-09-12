@@ -44,7 +44,9 @@ AutoFeatSci is organized as a **multi-agent network**, where each agent has a sp
 - Prepares summary of manuscript to be used in downstream tasks, as well as a succint description of each feature present in the original data, highlighting its physical significance to the task at hand
 
 ### 2. **Feature Proposal Agent** (`proposal`)  
-- Creat your description to this agent  
+- **Generates Physically Meaningful Features:**  Analyzes existing features, literature summaries, target definitions, and past model performance to propose new features that are physically interpretable and relevant to the prediction task.
+- **Specifies Feature Derivation:**  Provides clear instructions on how to compute each proposed feature from the original dataset, ensuring reproducibility and integration into the feature generation pipeline.
+
 
 ### 3. **Feature Generation Agent** (`execution`)
 - Translates proposed feature hypotheses into concrete dataset transformations, ensuring that each candidate feature is materialized as a new column in the DataFrame.
