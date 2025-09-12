@@ -26,8 +26,8 @@ def create_evaluation_agent_wrap(max_retries: int = 3, task: str = "regression")
           - state.eval_report: dict (feedback report with metrics, feature importance, narrative)
         """
         df = state.clean_augmented_data
-        feature_keys = state.feature_keys
-        target_key = state.target_key
+        feature_keys = state.cur_feature_keys
+        target_key = state.target
 
         for attempt in range(max_retries):
             try:

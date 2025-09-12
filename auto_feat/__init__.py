@@ -35,12 +35,13 @@ class AutoFeaturizer:
         self._literature_review: Optional[str] = None
         self._features_description: Dict[str, str] = {}   # original + engineered
         self._clean_augmented_data: pd.DataFrame = self.data.copy()
+        self.cur_feature_keys = [col for col in self._clean_augmented_data.columns if col != self.target]
 
 
         # From proposal
         self._construct_strategy: Dict[str, str] = {}
-        self.new_feature_significance: Optional[Dict[str, str]] = None
         self.new_feature_computation: Optional[Dict[str, str]] = None
+        
 
         # From generation
         self.error_message: Optional[str] = None
@@ -83,4 +84,5 @@ class AutoFeaturizer:
 
     @construct_strategy.setter
     def construct_strategy(self, strategy: Dict) -> None:
+        self.cur_feature_keys = list(strategy.keys())
         self._construct_strategy = strategy

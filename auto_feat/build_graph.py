@@ -1,54 +1,68 @@
-# LLM_hackson/auto_feat/build_graph.py
+"""
+Builds the LangGraph pipeline for automatic featurization with feedback loop.
+"""
 
-from langgraph.graph import StateGraph
-from langgraph.graph.state import CompiledGraph
+from langgraph.graph import StateGraph, END
 
-# === Import agents ===
-from auto_feat.first_pass.summarization.summarize import create_summarizer_agent_wrap
+# Import agents
+from auto_feat.first_pass.summarization.summarize import summarize
 from auto_feat.featurization_module.proposal import feat_proposal
 from auto_feat.featurization_module.execution import feature_generation
 from auto_feat.eval_module.evaluator import create_evaluation_agent_wrap
 
-# === Import state class ===
-from auto_feat.state import AutoFeaturizer  # you should place your AutoFeaturizer in auto_feat/state.py
+# Import LLM API wrapper
+from auto_feat.LLM_API.LLM_chat import chatbox
 
 
-def build_pipeline(llm, max_retries: int = 3, task: str = "regression") -> CompiledGraph:
+def build_autofeat_graph(task: str = "regression", max_retries: int = 5, max_iterations: int = 3):
     """
-    Constructs the full LangGraph workflow for AutoFeatSci.
+    Build the LangGraph pipeline with feedback loop.
+
+    Flow:
+        - Summarizer initializes AutoFeaturizer with literature + dataset.
+        - Evaluation runs on the original dataset to produce a baseline report.
+        - Feedback loop:
+            Evaluation → Proposal → Generation → Evaluation
+        - Stops after max_iterations or explicit END.
 
     Args:
-        llm: LLM backend (LangChain-compatible, e.g., ChatOpenAI).
-        max_retries (int): retry attempts for proposal/generation/evaluation.
         task (str): "regression" or "classification".
-
+        max_retries (int): retries for LLM-based modules.
+        max_iterations (int): number of feedback loop iterations.
     Returns:
-        Compiled LangGraph workflow.
+        workflow (StateGraph)
     """
-    workflow = StateGraph(AutoFeaturizer)
 
-    # === Nodes ===
-    summarizer_node = create_summarizer_agent_wrap(llm, max_retries=max_retries)
-    proposal_node = feat_proposal(llm, max_retries=max_retries)
-    generation_node = feature_generation(llm, max_retries=max_retries)
-    evaluation_node = create_evaluation_agent_wrap(max_retries=max_retries, task=task)
+    workflow = StateGraph(dict)
 
-    # === Register nodes ===
-    workflow.add_node("Summarizer", summarizer_node)
-    workflow.add_node("Proposal", proposal_node)
-    workflow.add_node("Generation", generation_node)
-    workflow.add_node("Evaluation", evaluation_node)
+    # --- Summarization (initialization only) ---
+    summarizer = summarize(chatbox, max_retries=max_retries)
+    workflow.add_node("Summarizer", summarizer)
 
-    # === Edges ===
+    # --- Proposal agent ---
+    proposal_agent = feat_proposal(chatbox, max_retries=max_retries)
+    workflow.add_node("FeatProposal", proposal_agent)
+
+    # --- Feature Generation agent ---
+    generation_agent = feature_generation(chatbox, max_retries=max_retries)
+    workflow.add_node("FeatGeneration", generation_agent)
+
+    # --- Evaluation agent ---
+    eval_agent = create_evaluation_agent_wrap(max_retries=max_retries, task=task)
+    workflow.add_node("Evaluation", eval_agent)
+
+    # --- Workflow wiring ---
+    # Entry: Summarizer → Evaluation (baseline)
     workflow.set_entry_point("Summarizer")
-    workflow.add_edge("Summarizer", "Proposal")
-    workflow.add_edge("Proposal", "Generation")
-    workflow.add_edge("Generation", "Evaluation")
+    workflow.add_edge("Summarizer", "Evaluation")
 
-    # Loop back: evaluation → proposal for iterative refinement
-    workflow.add_edge("Evaluation", "Proposal")
+    # Feedback loop: Evaluation → Proposal → Generation → Evaluation
+    workflow.add_edge("Evaluation", "FeatProposal")
+    workflow.add_edge("FeatProposal", "FeatGeneration")
+    workflow.add_edge("FeatGeneration", "Evaluation")
 
-    # Finish at Evaluation (you can later add a stopping condition)
-    workflow.set_finish_point("Evaluation")
+    # Exit after iterations
+    # We’ll let LangGraph END after max_iterations externally controlled
+    workflow.add_edge("Evaluation", END)
 
-    return workflow.compile()
+    return workflow
