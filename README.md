@@ -39,20 +39,18 @@ By automating this loop, AutoFeatSci helps:
 
 AutoFeatSci is organized as a **multi-agent network**, where each agent has a specialized role.  
 
-### 1. **Paper Analyzer Agent**  
-- Creat your description to this agent
+### 1. **Paper Analyzer  and Raw Feature Description Agent** (`summarize`)
+- Reads in raw manuscript text and data files
+- Prepares summary of manuscript to be used in downstream tasks, as well as a succint description of each feature present in the original data, highlighting its physical significance to the task at hand
 
-### 2. **Feature Description Agent**  
-- Creat your description to this agent
-
-### 3. **Feature Proposal Agent** (`feat_proposal`)  
+### 2. **Feature Proposal Agent** (`proposal`)  
 - Creat your description to this agent  
 
-### 4. **Feature Generation Agent**  
+### 3. **Feature Generation Agent** (`execution`)
 - Translates proposed feature hypotheses into concrete dataset transformations, ensuring that each candidate feature is materialized as a new column in the DataFrame.
 - Executes transformations reliably using standard numerical operations, while preserving the integrity of the original dataset.
 
-### 5. **Evaluation Module**  
+### 4. **Evaluation Module**  
 - Continuously evaluates the effectiveness of the current featurization by training predictive models on the augmented dataset.  
 - Measures model performance using metrics such as RMSE, R², and feature importance to assess how well the engineered features capture the target property.  
 - Summarizes results into feedback reports, which are passed back to the **Feature Proposal Agent** for refinement.  
