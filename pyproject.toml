@@ -1,0 +1,36 @@
+[project]
+name = "auto_feat"
+dynamic = ["version"]
+description = "Algorithms for automatic creation and testing of features using LLMs"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+keywords = ["feature engineering", "LLM", "data science"]
+authors = [
+    {name = "Guanna Tang", email = "tguannan@anl.gov"},
+    {name = "Vignesh Sampath", email = "vsampath@anl.gov"},
+    {name = "Victor Venturi", email = "vventuri@anl.gov"},
+    {name = "Noah Paulson", email = "npaulson@anl.gov"},
+]
+dependencies = [
+    "numpy",
+    "scipy",
+    "scikit-learn",
+    "pandas",
+    "openpyxl",
+    "argo-proxy",
+    "h2o",
+    "tqdm"
+]
+
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["auto_feat*"]
+
+[project.urls]
+repository = "https://github.com/guannant/LLM_auto_featurization"
+
+[tool.setuptools_scm]
